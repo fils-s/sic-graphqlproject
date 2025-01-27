@@ -13,7 +13,11 @@ const RegistoHumor = sequelize.define("RegistoHumor",
             type: DataTypes.DATE,
             allowNull: false
         },
-        tipoHumor: {
+        valorResposta: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        textoPergunta: {
             type: DataTypes.STRING,
             allowNull: false
         },
@@ -22,6 +26,10 @@ const RegistoHumor = sequelize.define("RegistoHumor",
             allowNull: true
         }
     },
+    {
+        tableName: 'RegistoHumor',
+        timestamps: false
+    }
 );
 
 module.exports = RegistoHumor;

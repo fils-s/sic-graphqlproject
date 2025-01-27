@@ -18,6 +18,10 @@ const Notificacao = sequelize.define("Notificacao",
             allowNull: false
         }
     },
+    {
+        tableName: 'Notificacao',
+        timestamps: false
+    }
 );
 
 module.exports = Notificacao;
