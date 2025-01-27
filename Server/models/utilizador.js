@@ -27,6 +27,12 @@ const Utilizador = sequelize.define("Utilizador",
         },
         role: {
             type: DataTypes.STRING,
+            validate: {
+                isIn: {
+                    args: [['utilizador', 'admin']],
+                    msg: 'O cargo de utilizador deve ser Utilizador ou Admin.'
+                }
+            },
             defaultValue: 'utilizador'
         },
         dataNascimento: {
@@ -36,7 +42,13 @@ const Utilizador = sequelize.define("Utilizador",
         freqResultados: {
             type: DataTypes.STRING,
             allowNull: false,
-            defaultValue: 'semanal'
+            validate: {
+                isIn: {
+                    args: [['Semanal', 'Quinzenal', 'Mensal']],
+                    msg: 'A frequência de resultados deve ser Semanal, Quinzenal ou Mensal.'
+                }
+            },
+            defaultValue: 'Semanal'
         }
     },
     {
