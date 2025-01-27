@@ -32,8 +32,17 @@ const Utilizador = sequelize.define("Utilizador",
         dataNascimento: {
             type: DataTypes.DATE,
             allowNull: true
+        },
+        freqResultados: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: 'semanal'
         }
     },
+    {
+        tableName: 'Utilizador',
+        timestamps: false
+    }
 );
 
 module.exports = Utilizador;
