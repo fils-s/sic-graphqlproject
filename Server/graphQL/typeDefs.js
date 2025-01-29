@@ -1,14 +1,20 @@
-import { gql } from 'apollo-server-express';
+const { gql } = require("apollo-server");
 
-export const typeDefs = gql`
+const typeDefs = gql`
+scalar Date
 # data de nascimento é de um tipo escalar customizado. tens de instalar graphql-scalars para usar Date
 type Utilizador {
-  id: ID!
+  utilizadorId: ID!
   username: String!
   password: String!
-  role: Cargo
+  role: Role
   dataNascimento: Date
   freqResultados: Frequencia!
+}
+
+type LoginResponse {
+  token: String!
+  message: String!
 }
 
 enum Frequencia {
@@ -17,7 +23,7 @@ enum Frequencia {
   MENSAL
 }
 
-enum Cargo {
+enum Role {
   UTILIZADOR
   ADMIN
 }
@@ -25,7 +31,6 @@ enum Cargo {
 
 type Notificacao {
   id: ID!
-  tipoNotif: String!
   textoNotif: String!
 }
 
@@ -39,7 +44,8 @@ type RegistoHumor {
 
 # Queries principais
 type Query {
-  me: User
+  perfil: Utilizador!
+  utilizadores: [Utilizador!]!
   listarRegistos: [RegistoHumor]
   
 }
@@ -53,8 +59,9 @@ input RespostaInput {
 
 # Mutações para administração
 type Mutation {
-  registo(username: String!, password: String!): User
-  login(username: String!, password: String!): String!
+  registar(username: String!, password: String!, dataNascimento: Date!, role: String): Utilizador
+  login(username: String!, password: String!): LoginResponse!
+  editarPerfil(novoUsername: String, novaFreqResultados: Frequencia): Utilizador
   novaResposta(input: RespostaInput!): RegistoHumor
   updateResposta(id: ID!, input: RespostaInput!): RegistoHumor
   removeResoposta(id: ID!): String
@@ -65,3 +72,5 @@ type Subscription {
   novaNotificacao: Notificacao
 }
 `
+
+module.exports = typeDefs;

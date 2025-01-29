@@ -46,16 +46,19 @@ const resolversUtilizador = {
 
   Mutation: {
     // Registar um novo utilizador
-    registar: async (_, { username, password, dataNascimento }) => {
+    registar: async (_, { username, password, dataNascimento, role }) => {
       const utilizadorExistente = await Utilizador.findOne({ where: { username } });
       if (utilizadorExistente) {
         throw new Error('Username já existe.');
       }
       // Encriptar a password antes de guardar
       const hashedPassword = await bcrypt.hash(password, 10);
+
+      const roleDefinido = role || 'utilizador';
       const novoUtilizador = await Utilizador.create({
         username,
         password: hashedPassword,
+        role: roleDefinido,
         dataNascimento
       });
 
@@ -73,10 +76,10 @@ const resolversUtilizador = {
       if (!utilizador) {
         throw new Error('Credenciais inválidas.');
       }
-
-      const isPasswordValid = await bcrypt.compare(password, utilizador.password);
+      
+      const isPasswordValid = bcrypt.compare(password, utilizador.password);      
       if (!isPasswordValid) {
-        throw new Error('Credenciais inválidas.');
+        throw new Error('Palavra Passe Errada.');
       }
       const token = jwt.sign({ id: utilizador.utilizadorId, username: utilizador.username }, SECRET, { expiresIn: '1d' });
 
