@@ -13,19 +13,19 @@ const resolversUtilizador = {
     // Obter todos os utilizadores (para admins)
     utilizadores: async (_, __, context) => {
       try {
-          if (!context.utilizador) {
-              throw new Error("Não autenticado.");
-          }
-  
-          if (context.utilizador.role !== "admin") {
-              throw new Error("Esta ação requer privilégios de administrador");
-          }
-  
-          return await Utilizador.findAll();
+        if (!context.utilizador) {
+          throw new Error("Não autenticado.");
+        }
+
+        if (context.utilizador.role !== "admin") {
+          throw new Error("Esta ação requer privilégios de administrador");
+        }
+
+        return await Utilizador.findAll();
       } catch (error) {
-          throw new Error(error.message);
+        throw new Error(error.message);
       }
-  },
+    },
     // Obter Perfil do Utilizador Autenticado
     perfil: async (_, __, context) => {
       if (!context.utilizador) {
@@ -120,10 +120,12 @@ const resolversUtilizador = {
       await utilizador.save();
 
       return {
-        utilizadorId: utilizador.utilizadorId,
-        username: utilizador.username,
-        dataNascimento: utilizador.dataNascimento,
-        freqResultados: utilizador.freqResultados,
+        utilizador: {
+          utilizadorId: utilizador.utilizadorId,
+          username: utilizador.username,
+          dataNascimento: utilizador.dataNascimento,
+          freqResultados: utilizador.freqResultados,
+        },
         message: 'Perfil atualizado com sucesso.',
       };
     }
