@@ -1,4 +1,4 @@
-import { gql } from "apollo-server";
+import { gql } from 'apollo-server-express';
 
 export const typeDefs = gql`
 # data de nascimento é de um tipo escalar customizado. tens de instalar graphql-scalars para usar Date
@@ -40,15 +40,23 @@ type RegistoHumor {
 # Queries principais
 type Query {
   me: User
+  listarRegistos: [RegistoHumor]
   
+}
+
+# Input
+input RespostaInput {
+  valorResposta: Int!
+  textoPergunta: String!
+  notasAdicionais: String
 }
 
 # Mutações para administração
 type Mutation {
   registo(username: String!, password: String!): User
   login(username: String!, password: String!): String!
-  novaResposta(valorResposta: Int!, textoPergunta: String!, notasAdicionais: String): RegistoHumor
-  updateResposta(id: ID!, valorResposta: Int!, textoPergunta: String!, notasAdicionais: String): RegistoHumor
+  novaResposta(input: RespostaInput!): RegistoHumor
+  updateResposta(id: ID!, input: RespostaInput!): RegistoHumor
   removeResoposta(id: ID!): String
 }
 
