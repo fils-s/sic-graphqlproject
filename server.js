@@ -12,6 +12,7 @@ async function startServer() {
         resolvers,
         context: async ({ req }) => {
             const authHeader = req.headers.authorization || "";
+            
             let utilizador = null;
 
             if (authHeader) {
