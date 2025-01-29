@@ -9,10 +9,6 @@ const Notificacao = sequelize.define("Notificacao",
             primaryKey: true,
             autoIncrement: true
         },
-        tipoNotif: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
         textoNotif: {
             type: DataTypes.STRING,
             allowNull: false
