@@ -1,38 +1,29 @@
 const express = require('express');
-const { graphqlHTTP } = require('express-graphql');
-const { buildSchema } = require('graphql');
+const { ApolloServer } = require('apollo-server-express');
+const resolvers  = require('./Server/graphQL/resolvers/index');
+const typeDefs = require('./Server/graphQL/typeDefs')
+const { verificarUtilizador } = require('./Server/middlewares/jwt');
 
-// Definir o esquema GraphQL
-// const schema = buildSchema(`
-//  type User {
-//     id: ID
-//     name: String
-//     email: String
-//  }
+const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: async ({ req }) => {
+        const authHeader = req.headers.authorization || "";
+        let utilizador = null;
 
-//  type Query {
-//     users: [User]
-//     user(id: ID!): User
-//     usersLike(str: String!): [User]
-//  }
-// `);
+        if (authHeader) {
+            try {
+                utilizador = await verificarUtilizador(authHeader);
+            } catch (error) {
+                console.error("Erro na autenticação:", error.message);
+            }
+        }
 
-// Resolvers para as queries
-// const root = {
-//     users: () => users,
-//     user: ({ id }) => users.find(user => user.id === parseInt(id)),
-//     usersLike: ({ str }) => users.filter(user => user.name.toLowerCase().includes(str.toLowerCase()))
-// };
-
-// Criar a aplicação Express
+        return { utilizador };
+    },
+})
 const app = express();
-
-// Configurar o endpoint GraphQL
-app.use('/graphql', graphqlHTTP({
-    schema: schema,
-    rootValue: root,
-    graphiql: true, // Interface interativa para testar queries
-}));
+server.applyMiddleware({ app });
 
 // Iniciar o servidor
 const PORT = 4000;
