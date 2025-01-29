@@ -17,10 +17,15 @@ type LoginResponse {
   message: String!
 }
 
+type EditProfileResponse {
+  utilizador: Utilizador!
+  message: String!
+}
+
 enum Frequencia {
-  SEMANAL
-  QUINZENAL
-  MENSAL
+  Semanal
+  Quinzenal
+  Mensal
 }
 
 enum Role {
@@ -59,9 +64,9 @@ input RespostaInput {
 
 # Mutações para administração
 type Mutation {
-  registar(username: String!, password: String!, dataNascimento: Date!, role: String): Utilizador
+  registar(username: String!, password: String!, dataNascimento: Date!, role: Role): Utilizador
   login(username: String!, password: String!): LoginResponse!
-  editarPerfil(novoUsername: String, novaFreqResultados: Frequencia): Utilizador
+  editarPerfil(novoUsername: String, novaFreqResultados: Frequencia): EditProfileResponse
   novaResposta(input: RespostaInput!): RegistoHumor
   updateResposta(id: ID!, input: RespostaInput!): RegistoHumor
   removeResoposta(id: ID!): String
