@@ -59,7 +59,7 @@
         <h2>Perfil</h2>
         <div id="profile-info"></div>
         <h3>Editar Perfil</h3>
-        <input type="text" id="edit-username" placeholder="Novo Username"/>
+        <input type="text" id="edit-username" placeholder="Novo Username" />
         <select id="edit-freqResultados">
             <option value="Semanal">Semanal</option>
             <option value="Quinzenal">Quinzenal</option>
@@ -68,8 +68,12 @@
         <button onclick="editProfile()">Atualizar Perfil</button>
     </div>
 
-
-
+    <!-- Secção de Admin -->
+    <div id="admin-section" class="form-container" style="display:none;">
+        <h3>Administração</h3>
+        <button onclick="getAllUsers()">Ver Todos os Utilizadores</button>
+        <div id="users-list"></div>
+    </div>
 
     <script src="script.js"></script>
 </body>

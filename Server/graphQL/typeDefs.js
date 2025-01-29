@@ -29,8 +29,8 @@ enum Frequencia {
 }
 
 enum Role {
-  UTILIZADOR
-  ADMIN
+  utilizador
+  admin
 }
 
 
