@@ -55,6 +55,7 @@ async function getProfile() {
                 username
                 dataNascimento
                 freqResultados
+                role
             }
         }
     `;
@@ -81,11 +82,14 @@ async function getProfile() {
                 <p>Frequência de Resultados: ${profile.freqResultados}</p>
             `;
 
-            // Esconder o botão "Ver Perfil" e mostrar o botão "Voltar"
-            document.getElementById('btn-ver-perfil').style.display = 'none';
-            document.getElementById('btn-voltar-home').style.display = 'block';
-
             document.getElementById('profile').style.display = 'block';
+
+            // Se for admin, mostrar o botão para ver todos os utilizadores
+            if (profile.role == 'admin') {
+                document.getElementById('admin-section').style.display = 'block';
+            } else {
+                document.getElementById('admin-section').style.display = 'none';
+            }
         }
     } catch (error) {
         alert('Erro ao tentar carregar perfil: ' + error.message);
@@ -131,5 +135,63 @@ async function editProfile() {
         }
     } catch (error) {
         alert('Erro ao tentar editar perfil: ' + error.message);
+    }
+}
+
+async function getAllUsers() {
+    const token = localStorage.getItem('token');
+
+    const query = `
+        query {
+            utilizadores {
+                utilizadorId
+                username
+                dataNascimento
+                freqResultados
+            }
+        }
+    `;
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({ query }),
+        });
+
+        const result = await response.json();
+        if (result.errors) {
+            alert(result.errors[0].message);
+        } else {
+            const users = result.data.utilizadores;
+            let tableHTML = `
+                <table border="1">
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Data de Nascimento</th>
+                        <th>Frequência de Resultados</th>
+                    </tr>
+            `;
+
+            users.forEach(user => {
+                tableHTML += `
+                    <tr>
+                        <td>${user.utilizadorId}</td>
+                        <td>${user.username}</td>
+                        <td>${user.dataNascimento}</td>
+                        <td>${user.freqResultados}</td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `</table>`;
+            document.getElementById("users-list").innerHTML = tableHTML;
+        }
+    } catch (error) {
+        alert('Erro ao tentar carregar utilizadores: ' + error.message);
     }
 }
