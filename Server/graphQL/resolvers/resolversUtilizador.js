@@ -13,17 +13,19 @@ const resolversUtilizador = {
     // Obter todos os utilizadores (para admins)
     utilizadores: async (_, __, context) => {
       try {
-        const utilizadorAutenticado = await verificarUtilizador(context.req.headers.authorization);
-
-        if (utilizadorAutenticado.role !== "admin") {
-          throw new Error("Esta ação requer privilégios de administrador");
-        }
-
-        return await Utilizador.findAll();
+          if (!context.utilizador) {
+              throw new Error("Não autenticado.");
+          }
+  
+          if (context.utilizador.role !== "admin") {
+              throw new Error("Esta ação requer privilégios de administrador");
+          }
+  
+          return await Utilizador.findAll();
       } catch (error) {
-        throw new Error(error.message);
+          throw new Error(error.message);
       }
-    },
+  },
     // Obter Perfil do Utilizador Autenticado
     perfil: async (_, __, context) => {
       if (!context.utilizador) {
@@ -76,13 +78,16 @@ const resolversUtilizador = {
       if (!utilizador) {
         throw new Error('Credenciais inválidas.');
       }
-      
-      const isPasswordValid = bcrypt.compare(password, utilizador.password);      
+
+      const isPasswordValid = bcrypt.compare(password, utilizador.password);
       if (!isPasswordValid) {
         throw new Error('Palavra Passe Errada.');
       }
-      const token = jwt.sign({ id: utilizador.utilizadorId, username: utilizador.username }, SECRET, { expiresIn: '1d' });
-
+      const token = jwt.sign(
+        { id: utilizador.utilizadorId, username: utilizador.username },
+        SECRET,
+        { expiresIn: '1d' }
+      );
       return {
         token,
         message: 'Autenticado com Sucesso',
