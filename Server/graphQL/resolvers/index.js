@@ -11,7 +11,6 @@ const resolvers = {
     ...resolversRegisto.Mutation,
   },
   Subscription: {
-    ...resolversUtilizador.Subscription,
     ...resolversRegisto.Subscription,
   },
 };
