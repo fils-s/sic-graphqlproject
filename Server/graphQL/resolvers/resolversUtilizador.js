@@ -132,7 +132,7 @@ const resolversUtilizador = {
   },
   Subscription: {
     novaNotificacao: {
-      subscribe: () => pubsub.asyncIterator('NOVA_NOTIFICACAO')
+      subscribe: () => pubsub.asyncIterableIterator('NOVA_NOTIFICACAO')
     }
   }
 };
