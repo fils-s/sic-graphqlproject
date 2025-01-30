@@ -4,98 +4,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frontend GraphQL</title>
+    <title>Monitor de Humor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        /* Definir o html e body para ocupar toda a altura da página */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+        }
+
+        /* Container principal que vai envolver todo o conteúdo */
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            flex-grow: 1; /* Garante que o container se expanda quando necessário */
+        }
+
+        h2, h3 {
+            color: #4a90e2;
+            text-align: center;
         }
 
         .form-container {
-            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        input {
-            padding: 10px;
-            margin: 5px 0;
-            width: 300px;
+        input, select, textarea, button {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            outline: none;
         }
 
-        button {
-            padding: 10px;
-            cursor: pointer;
+        input[type="date"] {
+            padding-left: 10px;
+        }
+
+        input, textarea {
             width: 100%;
         }
 
-        #profile,
-        #home {
-            margin-top: 20px;
+        select {
+            width: 100%;
         }
+
+        textarea {
+            height: 100px;
+            resize: none;
+        }
+
+        button {
+            background-color: #4a90e2;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #357ab7;
+        }
+
+        #humor-feedback {
+            color: #2d8e3b;
+            font-weight: bold;
+            text-align: center;
+            display: none;
+        }
+
+        .back-btn {
+            background-color: #f57c00;
+        }
+
+        .back-btn:hover {
+            background-color: #e65c00;
+        }
+
+        /* Ajustes para garantir que as seções tenham tamanho consistente */
+        .form-container > div {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Ajuste para seções do perfil */
+        #profile {
+            display: none;
+        }
+
+        #profile-info {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Ajuste para a seção de Humor */
+        #humor-section {
+            display: none;
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
     </style>
 </head>
 
 <body>
-    <div id="auth-section" class="form-container">
-        <h2>Login</h2>
-        <input type="text" id="login-username" placeholder="Username" required />
-        <input type="password" id="login-password" placeholder="Password" required />
-        <button onclick="login()">Login</button>
+    <div class="container">
+        <!-- Login and Registration Section -->
+        <div id="auth-section" class="form-container">
+            <h2>Login</h2>
+            <input type="text" id="login-username" placeholder="Username" required />
+            <input type="password" id="login-password" placeholder="Password" required />
+            <button onclick="login()">Login</button>
 
-        <h2>Registar</h2>
-        <input type="text" id="register-username" placeholder="Username" required />
-        <input type="password" id="register-password" placeholder="Password" required />
-        <input type="date" id="register-dob" required />
-        <button onclick="register()">Registar</button>
-    </div>
+            <h2>Registar</h2>
+            <input type="text" id="register-username" placeholder="Username" required />
+            <input type="password" id="register-password" placeholder="Password" required />
+            <input type="password" id="register-confirm-password" placeholder="Confirmar Senha" required />
+            <input type="date" id="register-dataNascimento" required />
+            <button onclick="register()">Registar</button>
+        </div>
 
-    <!-- Home page -->
-    <div id="home" class="form-container" style="display:none;">
-        <h2>Bem-vindo</h2>
-        <button id="btn-ver-perfil" onclick="getProfile()">Ver Perfil</button>
-        <button id="btn-voltar-home" onclick="showHomePage()" style="display:none;">Voltar</button>
-    </div>
+        <!-- Home Page -->
+        <div id="home" class="form-container card" style="display:none;">
+            <h2>Bem-vindo</h2>
+            <button id="btn-ver-perfil" onclick="getProfile()">Ver Perfil</button>
+            <button id="btn-voltar-home" onclick="showHomePage()" style="display: none;" class="back-btn">Voltar</button>
+        </div>
 
-    <!-- Secção de Registo de Humor -->
-    <div id="humor-section" class="form-container" style="display:none;">
-        <h3>Como está o seu humor hoje?</h3>
-        <p>Numa escala de 1 a 9, como classificaria o seu dia hoje?</p>
-        <select id="humor-value">
-            <option value=1>1 - Extremamente Desafiante</option>
-            <option value=2>2 - Muito Desafiante</option>
-            <option value=3>3 - Desafiante</option>
-            <option value=4>4 - Um Pouco Desafiante</option>
-            <option value=5>5 - Neutro</option>
-            <option value=6>6 - Aceitável</option>
-            <option value=7>7 - Bom</option>
-            <option value=8>8 - Muito Bom</option>
-            <option value=9>9 - Excelente</option>
-        </select>
-        <br>
-        <textarea id="humor-notes" placeholder="Notas adicionais (opcional)"></textarea>
-        <br>
-        <button onclick="sendMoodResponse()">Registar Humor</button>
-        <p id="humor-feedback" style="display:none; color: green;"></p>
-    </div>
+        <!-- Mood Registration Section -->
+        <div id="humor-section" class="form-container card" style="display:none;">
+            <h3>Como está o seu humor hoje?</h3>
+            <p>Numa escala de 1 a 9, como classificaria o seu dia hoje?</p>
+            <select id="humor-value">
+                <option value="1">1 - Extremamente Desafiante</option>
+                <option value="2">2 - Muito Desafiante</option>
+                <option value="3">3 - Desafiante</option>
+                <option value="4">4 - Um Pouco Desafiante</option>
+                <option value="5">5 - Neutro</option>
+                <option value="6">6 - Aceitável</option>
+                <option value="7">7 - Bom</option>
+                <option value="8">8 - Muito Bom</option>
+                <option value="9">9 - Excelente</option>
+            </select>
+            <textarea id="humor-notes" placeholder="Notas adicionais (opcional)"></textarea>
+            <button onclick="sendMoodResponse()">Registar Humor</button>
+            <p id="humor-feedback"></p>
+        </div>
 
+        <!-- Profile Page -->
+        <div id="profile" class="form-container card" style="display:none;">
+            <h2>Perfil</h2>
+            <div id="profile-info"></div>
+            <h3>Editar Perfil</h3>
+            <input type="text" id="edit-username" placeholder="Novo Username" />
+            <select id="edit-freqResultados">
+                <option value="Semanal">Semanal</option>
+                <option value="Quinzenal">Quinzenal</option>
+                <option value="Mensal">Mensal</option>
+            </select>
+            <button onclick="editProfile()">Atualizar Perfil</button>
+        </div>
 
-    <!-- Profile page -->
-    <div id="profile" class="form-container" style="display:none;">
-        <h2>Perfil</h2>
-        <div id="profile-info"></div>
-        <h3>Editar Perfil</h3>
-        <input type="text" id="edit-username" placeholder="Novo Username" />
-        <select id="edit-freqResultados">
-            <option value="Semanal">Semanal</option>
-            <option value="Quinzenal">Quinzenal</option>
-            <option value="Mensal">Mensal</option>
-        </select>
-        <button onclick="editProfile()">Atualizar Perfil</button>
-    </div>
-
-    <!-- Secção de Admin -->
-    <div id="admin-section" class="form-container" style="display:none;">
-        <h3>Administração</h3>
-        <button onclick="getAllUsers()">Ver Todos os Utilizadores</button>
-        <div id="users-list"></div>
+        <!-- Admin Section -->
+        <div id="admin-section" class="form-container card" style="display:none;">
+            <h3>Administração</h3>
+            <button onclick="getAllUsers()">Ver Todos os Utilizadores</button>
+            <div id="users-list"></div>
+        </div>
     </div>
 
     <script src="script.js"></script>

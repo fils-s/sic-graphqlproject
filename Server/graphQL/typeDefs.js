@@ -35,12 +35,12 @@ enum Role {
 
 
 type Notificacao {
-  id: ID!
+  notificacaoId: ID!
   textoNotif: String!
 }
 
 type RegistoHumor {
-  id: ID!
+  registoId: ID!
   data: Date!
   valorResposta: Int!
   textoPergunta: String!
