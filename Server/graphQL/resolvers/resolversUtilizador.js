@@ -129,11 +129,6 @@ const resolversUtilizador = {
         message: 'Perfil atualizado com sucesso.',
       };
     }
-  },
-  Subscription: {
-    novaNotificacao: {
-      subscribe: () => pubsub.asyncIterableIterator('NOVA_NOTIFICACAO')
-    }
   }
 };
 

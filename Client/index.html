@@ -54,6 +54,29 @@
         <button id="btn-voltar-home" onclick="showHomePage()" style="display:none;">Voltar</button>
     </div>
 
+    <!-- Secção de Registo de Humor -->
+    <div id="humor-section" class="form-container" style="display:none;">
+        <h3>Como está o seu humor hoje?</h3>
+        <p>Numa escala de 1 a 9, como classificaria o seu dia hoje?</p>
+        <select id="humor-value">
+            <option value=1>1 - Extremamente Desafiante</option>
+            <option value=2>2 - Muito Desafiante</option>
+            <option value=3>3 - Desafiante</option>
+            <option value=4>4 - Um Pouco Desafiante</option>
+            <option value=5>5 - Neutro</option>
+            <option value=6>6 - Aceitável</option>
+            <option value=7>7 - Bom</option>
+            <option value=8>8 - Muito Bom</option>
+            <option value=9>9 - Excelente</option>
+        </select>
+        <br>
+        <textarea id="humor-notes" placeholder="Notas adicionais (opcional)"></textarea>
+        <br>
+        <button onclick="sendMoodResponse()">Registar Humor</button>
+        <p id="humor-feedback" style="display:none; color: green;"></p>
+    </div>
+
+
     <!-- Profile page -->
     <div id="profile" class="form-container" style="display:none;">
         <h2>Perfil</h2>

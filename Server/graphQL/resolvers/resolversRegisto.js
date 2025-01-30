@@ -28,7 +28,8 @@ const resolversRegisto = {
                 throw new Error('Não autenticado.');
               }
               let utilizador = await Utilizador.findById(context.utilizador.utilizadorId);
-              const registo = new RegistoHumor({ valorResposta, textoPergunta, notasAdicionais, user: utilizador});
+              const dataHoje = new Date();
+              const registo = new RegistoHumor({ data: dataHoje, valorResposta, textoPergunta, notasAdicionais, user: utilizador});
               await registo.save();
   
               pubsub.publish('NOVO_REGISTO_ADICIONADO');
@@ -36,8 +37,8 @@ const resolversRegisto = {
         },
 
         //Atualizar os dados (valor da resposta e notas adicionais) num registo de humor
-        updateResposta: async (_, { registoID, valorResposta, textoPergunta, notasAdicionais }) => {
-            const registo = await RegistoHumor.findByPk(registoID);
+        updateResposta: async (_, { registoId, novoValorResposta, novasNotasAdicionais }) => {
+            const registo = await RegistoHumor.findByPk(registoId);
             if (!registo) {
               throw new Error('Registo não encontrado');
             }
@@ -49,10 +50,10 @@ const resolversRegisto = {
                 registo.notasAdicionais = novasNotasAdicionais
               }
         
-              await utilizador.save();
+              await registo.save();
         
               return {
-                registoID: registo.registoID,
+                registoId: registo.registoId,
                 valorResposta: registo.valorResposta,
                 textoPergunta: registo.textoPergunta,
                 notasAdicionais: registo.notasAdicionais
@@ -60,8 +61,8 @@ const resolversRegisto = {
         },
 
         //REmover um registo de humor
-        removeResposta: async (_, { registoID }) => {
-            const registo = await RegistoHumor.findByPk(registoID);
+        removeResposta: async (_, { registoId }) => {
+            const registo = await RegistoHumor.findByPk(registoId);
             if (!registo) {
               throw new Error('Registo não encontrado');
             }

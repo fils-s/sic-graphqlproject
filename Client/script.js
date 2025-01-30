@@ -41,6 +41,7 @@ function showHomePage() {
     document.getElementById('auth-section').style.display = 'none';
     document.getElementById('home').style.display = 'block';
     document.getElementById('profile').style.display = 'none';
+    document.getElementById('humor-section').style.display = 'block';
     document.getElementById('btn-ver-perfil').style.display = 'block'; // Mostrar o botão novamente
     document.getElementById('btn-voltar-home').style.display = 'none'; // Esconder o botão de voltar
 }
@@ -193,5 +194,49 @@ async function getAllUsers() {
         }
     } catch (error) {
         alert('Erro ao tentar carregar utilizadores: ' + error.message);
+    }
+}
+
+async function sendMoodResponse() {
+    const token = localStorage.getItem('token');
+    const valorResposta = document.getElementById("humor-value").value;
+    const notasAdicionais = document.getElementById("humor-notes").value;
+
+    const query = `
+        mutation {
+            novaResposta( { valorResposta: ${valorResposta}, textoPergunta: "Numa escala de 1 a 9 como classificaria o seu dia hoje?", notasAdicionais: "${notasAdicionais}" }) {
+                id
+                data
+                valorResposta
+                textoPergunta
+                notasAdicionais
+            }
+        }
+    `;
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({ query }),
+        });
+
+        const result = await response.json();
+        if (result.errors) {
+            alert(result.errors[0].message);
+        } else {
+            const registo = result.data.novaResposta;
+            document.getElementById("humor-feedback").innerText = `Registo de humor enviado com sucesso! Data: ${new Date(registo.data).toLocaleDateString()}`;
+            document.getElementById("humor-feedback").style.display = "block";
+
+            // Limpar campos depois de enviar
+            document.getElementById("humor-value").value = "5";
+            document.getElementById("humor-notes").value = "";
+        }
+    } catch (error) {
+        alert('Erro ao enviar registo de humor: ' + error.message);
     }
 }

@@ -55,21 +55,14 @@ type Query {
   
 }
 
-# Input
-input RespostaInput {
-  valorResposta: Int!
-  textoPergunta: String!
-  notasAdicionais: String
-}
-
 # Mutações para administração
 type Mutation {
   registar(username: String!, password: String!, dataNascimento: Date!, role: Role): Utilizador
   login(username: String!, password: String!): LoginResponse!
   editarPerfil(novoUsername: String, novaFreqResultados: Frequencia): EditProfileResponse
-  novaResposta(input: RespostaInput!): RegistoHumor
-  updateResposta(id: ID!, input: RespostaInput!): RegistoHumor
-  removeResoposta(id: ID!): String
+  novaResposta(data: Date!, valorResposta: Int!, textoPergunta: String!, notasAdicionais: String!): RegistoHumor
+  updateResposta(id: ID!, valorResposta: Int!, textoPergunta: String!, notasAdicionais: String!): RegistoHumor
+  removeResposta(id: ID!): String
 }
 
 # Subscrições para alterações nos dados
