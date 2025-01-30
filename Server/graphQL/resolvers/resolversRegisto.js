@@ -27,9 +27,9 @@ const resolversRegisto = {
             if (!context.utilizador) {
                 throw new Error('Não autenticado.');
               }
-              let utilizador = await Utilizador.findById(context.utilizador.utilizadorId);
-              const dataHoje = new Date();
-              const registo = new RegistoHumor({ data: dataHoje, valorResposta, textoPergunta, notasAdicionais, user: utilizador});
+              let utilizador = await Utilizador.findByPk(context.utilizador.utilizadorId);
+              const dataHoje = new Date().toISOString();
+              const registo = new RegistoHumor({ data: dataHoje, valorResposta, textoPergunta, notasAdicionais, utilizadorId: utilizador.utilizadorId});
               await registo.save();
   
               pubsub.publish('NOVO_REGISTO_ADICIONADO');
@@ -79,7 +79,7 @@ const resolversRegisto = {
 
 // Função para fazer com que a notificação aconteça a cada 24 horas
 const notificacaoDiaria = () => {
-    const notificacao = { id: '1', textoNotif: 'Não te esqueças de registar o teu nível de humor de hoje' };
+    const notificacao = { notificacaoId: '1', textoNotif: 'Não te esqueças de registar o teu nível de humor de hoje' };
     pubsub.publish('NOVA_NOTIFICACAO', { novaNotificacao: notificacao });
   };
 

@@ -37,14 +37,61 @@ async function login() {
     }
 }
 
+// Função para fazer registo de utilizador
+async function register() {
+    const username = document.getElementById("register-username").value;
+    const password = document.getElementById("register-password").value;
+    const confirmPassword = document.getElementById("register-confirm-password").value;
+    const dataNascimento = document.getElementById("register-dataNascimento").value;    
+
+    // Verificar se as senhas são iguais
+    if (password !== confirmPassword) {
+        alert('As senhas não coincidem!');
+        return;
+    }
+
+    const query = `
+        mutation {
+            registar(username: "${username}", password: "${password}", dataNascimento: "${dataNascimento}") {
+                utilizadorId
+                username
+                dataNascimento
+            }
+        }
+    `;
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ query }),
+        });
+
+        const result = await response.json();
+        if (result.errors) {
+            alert(result.errors[0].message);
+        } else {
+            alert("Utilizador Registado com Sucesso");
+        }
+    } catch (error) {
+        alert('Erro ao tentar registar: ' + error.message);
+    }
+}
+
+
 function showHomePage() {
     document.getElementById('auth-section').style.display = 'none';
     document.getElementById('home').style.display = 'block';
     document.getElementById('profile').style.display = 'none';
     document.getElementById('humor-section').style.display = 'block';
-    document.getElementById('btn-ver-perfil').style.display = 'block'; // Mostrar o botão novamente
-    document.getElementById('btn-voltar-home').style.display = 'none'; // Esconder o botão de voltar
+
+    // Esconder o botão de voltar e mostrar o botão de ver perfil
+    document.getElementById('btn-voltar-home').style.display = 'none';
+    document.getElementById('btn-ver-perfil').style.display = 'block';
 }
+
 
 async function getProfile() {
     const token = localStorage.getItem('token');
@@ -83,10 +130,15 @@ async function getProfile() {
                 <p>Frequência de Resultados: ${profile.freqResultados}</p>
             `;
 
+            // Exibir o perfil e ocultar a home
             document.getElementById('profile').style.display = 'block';
+            document.getElementById('home').style.display = 'none';
 
-            // Se for admin, mostrar o botão para ver todos os utilizadores
-            if (profile.role == 'admin') {
+            // Mostrar o botão de "Voltar para Home"
+            document.getElementById('btn-voltar-home').style.display = 'block';
+
+            // Se for admin, mostrar a seção de admin
+            if (profile.role === 'admin') {
                 document.getElementById('admin-section').style.display = 'block';
             } else {
                 document.getElementById('admin-section').style.display = 'none';
@@ -96,6 +148,7 @@ async function getProfile() {
         alert('Erro ao tentar carregar perfil: ' + error.message);
     }
 }
+
 
 // Função para editar o perfil do utilizador
 async function editProfile() {
@@ -201,11 +254,12 @@ async function sendMoodResponse() {
     const token = localStorage.getItem('token');
     const valorResposta = document.getElementById("humor-value").value;
     const notasAdicionais = document.getElementById("humor-notes").value;
-
+    const dataHoje = new Date().toISOString();
+    
     const query = `
         mutation {
-            novaResposta( { valorResposta: ${valorResposta}, textoPergunta: "Numa escala de 1 a 9 como classificaria o seu dia hoje?", notasAdicionais: "${notasAdicionais}" }) {
-                id
+            novaResposta(data: "${dataHoje}", valorResposta: ${valorResposta}, textoPergunta: "Numa escala de 1 a 9 como classificaria o seu dia hoje?", notasAdicionais: "${notasAdicionais}") {
+                registoId
                 data
                 valorResposta
                 textoPergunta
